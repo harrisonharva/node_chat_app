@@ -1,14 +1,25 @@
 const path = require('path');
+const http = require('http');
 const express = require('express');
+const socketIO = require('socket.io');
 const hbs = require('hbs');
+
 const port = process.env.PORT || 3000;
-
-// app.statics.middleware =
 const publicPath = path.join(__dirname, '../public' );
-// hbs.registerPartials(__dirname+"/views/partials");
-
 var app = express();
+// Create http server  to integrate socketIO with ExpressJS
+var server = http.createServer(app);
+var io = socketIO(server);
+
+// Set default path for templates and user interface files
 app.use(express.static(publicPath));
+
+io.on('connection', (socket) => {
+    console.log("New user connected");
+    socket.on('disconnect', () => {
+        console.log("User was disconnected");
+    });
+});
 
 app.get('/', (req, res) => {
     res.render(publicPath+'/index.html', {
@@ -17,7 +28,7 @@ app.get('/', (req, res) => {
 	});
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server started on port : ${port}`);
 });
 
