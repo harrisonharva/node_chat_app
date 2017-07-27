@@ -10,12 +10,18 @@ socket.on('newMessage', function(message){
     console.log("text :"+message.text);
     console.log("createdAt :"+message.createdAt);
     console.log(message);
+    var li = jQuery('<li></li>');
+    li.text(`${message.from}:${message.text}`);
+    jQuery('#messages').append(li);
 });
 socket.on('newConnection', function(message){
     console.log("from :"+message.from);
     console.log("text :"+message.text);
     console.log("createdAt :"+message.createdAt);
     console.log(message);
+    var li = jQuery('<li></li>');
+    li.text(`${message.from}:${message.text}`);
+    jQuery('#messages').append(li);
 });
 socket.on('userDisconnected', function(message){
     console.log('User disconnected Event');
@@ -23,11 +29,18 @@ socket.on('userDisconnected', function(message){
     console.log("text :"+message.text);
     console.log("createdAt :"+message.createdAt);
     console.log(message);
+    var li = jQuery('<li></li>');
+    li.text(`${message.from}:${message.text}`);
+    jQuery('#messages').append(li);
 });
-socket.emit('createMessage', {
-    from: "testUser1",
-    text: "Hi !!!!"
-}, function(data){
-    console.log('Got it');
-    console.log(data);
+
+jQuery('#message-form').on('submit', function(e) {
+    e.preventDefault();
+    var form_name = "testUser_"+new Date().getTime();
+    socket.emit('createMessage',{
+        from: form_name,
+        text: jQuery('#message').val()
+    }, function(data) {
+        console.log("Message form data acknowledged");
+    });
 });
