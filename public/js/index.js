@@ -16,7 +16,7 @@ socket.on('newMessage', function(message){
     console.log("text :"+message.text);
     console.log("createdAt :"+message.createdAt);
 });
-socket.on('NewConnection', function(message){
+socket.on('newConnection', function(message){
     console.log('New Connection Message Received Event');
     console.log(message);
     console.log("from :"+message.from);

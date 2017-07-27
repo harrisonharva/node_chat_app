@@ -2,8 +2,9 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
-const hbs = require('hbs');
+// const hbs = require('hbs');
 
+const {generateMessage} = require('./utils/message');
 const port = process.env.PORT || 3000;
 const publicPath = path.join(__dirname, '../public' );
 var app = express();
@@ -18,18 +19,10 @@ io.on('connection', (socket) => {
     console.log("New user connected");
 
     // socket.emit from Admin to new user window in chat app
-    socket.emit('NewConnection', {
-        from: "Admin",
-        text: "Welcome to the chat app",
-        createdAt: new Date().toTimeString()
-    });
+    socket.emit('newConnection', generateMessage("Admin", "Welcome to the chat app"));
 
     // socket.broadcast.emit from Admin to all the other user except new user to notify user joined
-    socket.broadcast.emit('NewConnection', {
-        from: "Admin",
-        text: "New user joined",
-        createdAt: new Date().toTimeString()
-    });
+    socket.broadcast.emit('newConnection', generateMessage("Admin", "New user joined"));
 
 
     // socket.emit('newMessage', {
@@ -39,11 +32,7 @@ io.on('connection', (socket) => {
     // });
     socket.on('createMessage', (message) => {
         console.log("createMessage: ", message);
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().toTimeString()
-        });
+        io.emit('newMessage', generateMessage(message.from, message.text));
         // socket.broadcast.emit('newMessage', {
         //     from: message.from,
         //     text: message.text,
@@ -54,17 +43,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log("User was disconnected");
         // socket.emit from Admin to disconnected user window in chat app
-        socket.emit('userDisconnected', {
-            from: "Admin",
-            text: "Good bye!!!",
-            createdAt: new Date().toTimeString()
-        });
+        socket.emit('userDisconnected', generateMessage("Admin", "Good bye!!!"));
         // socket.broadcast.emit from Admin to all the other user except new user to notify user disconnected
-        socket.broadcast.emit('userDisconnected', {
-            from: "Admin",
-            text: "User disconnected from this conversation",
-            createdAt: new Date().toTimeString()
-        });
+        socket.broadcast.emit('userDisconnected', generateMessage("Admin", "User disconnected from this conversation"));
     });
 });
 
