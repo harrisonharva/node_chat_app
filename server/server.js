@@ -24,10 +24,10 @@ io.on('connection', (socket) => {
     console.log("New user connected");
 
     // socket.emit from Admin to new user window in chat app
-    socket.emit('newConnection', generateMessage("Admin", "Welcome to the chat app"));
+    socket.emit('newMessage', generateMessage("Admin", "Welcome to the chat app"));
 
     // socket.broadcast.emit from Admin to all the other user except new user to notify user joined
-    socket.broadcast.emit('newConnection', generateMessage("Admin", "New user joined"));
+    socket.broadcast.emit('newMessage', generateMessage("Admin", "New user joined"));
 
     socket.on('createMessage', (message, callback) => {
         console.log("createMessage: ", message);
@@ -44,10 +44,10 @@ io.on('connection', (socket) => {
         console.log("User was disconnected");
 
         // socket.emit from Admin to disconnected user window in chat app
-        socket.emit('userDisconnected', generateMessage("Admin", "Good bye!!!"));
+        socket.emit('newMessage', generateMessage("Admin", "Good bye!!!"));
 
         // socket.broadcast.emit from Admin to all the other user except new user to notify user disconnected
-        socket.broadcast.emit('userDisconnected', generateMessage("Admin", "User disconnected from this conversation"));
+        socket.broadcast.emit('newMessage', generateMessage("Admin", "User disconnected from this conversation"));
     });
 });
 

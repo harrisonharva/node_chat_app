@@ -10,35 +10,18 @@ socket.on('newMessage', function(message){
     console.log("text :"+message.text);
     console.log("createdAt :"+message.createdAt);
     console.log(message);
+    var formattedTime = moment(message.createdAt).format('h:mm a');
     var li = jQuery('<li></li>');
-    li.text(`${message.from}:${message.text}`);
-    jQuery('#messages').append(li);
-});
-socket.on('newConnection', function(message){
-    console.log("from :"+message.from);
-    console.log("text :"+message.text);
-    console.log("createdAt :"+message.createdAt);
-    console.log(message);
-    var li = jQuery('<li></li>');
-    li.text(`${message.from}:${message.text}`);
-    jQuery('#messages').append(li);
-});
-socket.on('userDisconnected', function(message){
-    console.log('User disconnected Event');
-    console.log("from :"+message.from);
-    console.log("text :"+message.text);
-    console.log("createdAt :"+message.createdAt);
-    console.log(message);
-    var li = jQuery('<li></li>');
-    li.text(`${message.from}:${message.text}`);
+    li.text(`${message.from} ${formattedTime}:${message.text}`);
     jQuery('#messages').append(li);
 });
 
 socket.on('newLocationMessage', function(message){
+    var formattedTime = moment(message.createdAt).format('h:mm a');
     var li = jQuery('<li></li>');
     var a = jQuery('<a target="_blank">My Current Location</a>');
     a.attr('href', message.url);
-    li.text(`${message.from}:`).append(a);
+    li.text(`${message.from} ${formattedTime}:`).append(a);
     jQuery('#messages').append(li);
 });
 
