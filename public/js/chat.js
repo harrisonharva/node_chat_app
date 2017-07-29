@@ -11,7 +11,7 @@ function scrollToBottom(){
     var scrollHeight = messages.prop('scrollHeight');
     var newMessageHeight = newMessage.innerHeight();
     var lastMessageHeight = newMessage.prev().innerHeight();
-console.log(clientHeight, scrollTop, scrollHeight, newMessageHeight);
+
     if((clientHeight+scrollTop+newMessageHeight+lastMessageHeight) >= scrollHeight) {
         messages.scrollTop(scrollHeight);
     }
@@ -19,9 +19,26 @@ console.log(clientHeight, scrollTop, scrollHeight, newMessageHeight);
 
 socket.on('connect', function() {
     console.log("Connected to Server");
+    var params = jQuery.deparam(window.location.search);
+    socket.emit("join", params, function(error) {
+        if(error) {
+            alert(error);
+            window.location.href = "/";
+        } else {
+            console.log("No Error so connecting to chat page");
+        }
+    });
 });
 socket.on('disconnect', function() {
     console.log("Disconnected from server");
+});
+socket.on('updateUserList', function(users){
+    console.log('Users List:', users);
+    var ol = jQuery('<ol></ol>');
+    users.forEach(function (user){
+        ol.append(jQuery('<li></li>').text(user));
+    });
+    jQuery('#users').html(ol);
 });
 socket.on('newMessage', function(message){
     var template = jQuery('#message-template').html();
@@ -50,13 +67,12 @@ socket.on('newLocationMessage', function(message){
 jQuery('#message-form').on('submit', function(e) {
     e.preventDefault();
     var messageTextBox = jQuery('#message');
-    var form_name = "testUser_"+new Date().getTime();
+    var form_name = $('#name');
     socket.emit('createMessage',{
-        from: form_name,
+        from: form_name.val(),
         text: messageTextBox.val()
     }, function(data) {
         console.log("Message form data acknowledged");
-        messageTextBox.val('');
     });
 });
 
