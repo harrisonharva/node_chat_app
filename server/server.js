@@ -60,13 +60,21 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (message, callback) => {
         console.log("createMessage: ", message);
-        io.emit('newMessage', generateMessage(message.from, message.text));
-        callback(0);
+        var user = users.getUser(socket.id);
+        if(user[0] && isRealString(message.text)) {
+            io.to(user[0].room).emit('newMessage', generateMessage(user[0].name, message.text));
+            callback(0);
+        } else {
+            callback("Improper input params from createMessage emit method");
+        }
     });
 
     socket.on("createLocationMessage", (geolocationData) => {
         console.log("createLocationMessage: ", geolocationData);
-        io.emit("newLocationMessage", generateLocationMessage('Admin', geolocationData.latitude, geolocationData.longitude));
+        var user = users.getUser(socket.id);
+        if(user[0]) {
+            io.to(user[0].room).emit("newLocationMessage", generateLocationMessage(user[0].name, geolocationData.latitude, geolocationData.longitude));
+        }
     });
 
     socket.on('disconnect', () => {
