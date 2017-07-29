@@ -74,6 +74,7 @@ jQuery('#message-form').on('submit', function(e) {
     }, function(data) {
         console.log("Message form data acknowledged");
     });
+    messageTextBox.val('');
 });
 
 var locationButton = jQuery('#send-location');
