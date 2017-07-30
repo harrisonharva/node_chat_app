@@ -1,4 +1,3 @@
-var _ = require('lodash');
 // [{
 //     id:'/#45sdsafasdfwerqwer',
 //     name:'User1',

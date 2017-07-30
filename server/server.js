@@ -59,7 +59,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('createMessage', (message, callback) => {
-        console.log("createMessage: ", message);
         var user = users.getUser(socket.id);
         if(user[0] && isRealString(message.text)) {
             io.to(user[0].room).emit('newMessage', generateMessage(user[0].name, message.text));
@@ -70,7 +69,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on("createLocationMessage", (geolocationData) => {
-        console.log("createLocationMessage: ", geolocationData);
         var user = users.getUser(socket.id);
         if(user[0]) {
             io.to(user[0].room).emit("newLocationMessage", generateLocationMessage(user[0].name, geolocationData.latitude, geolocationData.longitude));
@@ -79,12 +77,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         var user = users.removeUser(socket.id);
-        console.log(socket.id);
-        console.log(user);
         if(user) {
-            console.log("In the condition");
-            console.log(user[0].room);
-            console.log(users.getUserList(user[0].room));
             io.to(user[0].room).emit('updateUserList', users.getUserList(user[0].room));
             // socket.broadcast.emit from Admin to all the other user except new user to notify user disconnected
             io.to(user[0].room).emit('newMessage', generateMessage("Admin", `${user[0].name} has left.`));
